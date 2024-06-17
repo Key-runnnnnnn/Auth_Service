@@ -12,7 +12,7 @@ const prepareAndStartServer= async ()=>{
   app.use('/api', apiRoutes);
   app.listen(PORT, async () => {
     // const userRepository = new UserRepository();
-    // const user =  await userRepository.getById(1);
+    // const user =  await userRepository.getById(4);
     // console.log(user);
 
     console.log(`Server is running on port ${PORT}`);
