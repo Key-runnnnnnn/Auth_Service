@@ -4,6 +4,8 @@ const app = express();
 const { PORT } = require('./config/serverConfig');
 const apiRoutes = require('./routes/index');
 
+const db = require('./models/index');
+
 // const UserService = require('./services/user-service')
 
 const prepareAndStartServer = async () => {
@@ -20,6 +22,12 @@ const prepareAndStartServer = async () => {
 
     // const verify= userService.verifyToken(token)
     // console.log("verify", verify)
+
+
+    if (process.env.DB_SYNC) {
+      console.log("Database is in sync mode")
+      await db.sequelize.sync({ alter: true });
+    }
   });
 }
 
