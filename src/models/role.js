@@ -11,15 +11,15 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsToMany(models.User,{
-        through:'User_Roles'
+      this.belongsToMany(models.User, {
+        through: 'User_Roles'
       })
     }
   }
   Role.init({
     name: {
-      type:DataTypes.STRING,
-      allowNull:false
+      type: DataTypes.STRING,
+      allowNull: false
     }
   }, {
     sequelize,

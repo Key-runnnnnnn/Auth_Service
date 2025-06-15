@@ -65,6 +65,19 @@ class UserRepository {
     }
   }
 
+  async getAllUsers() {
+    try {
+      const users = await User.findAll({
+        attributes: ['id', 'email']
+      });
+      return users;
+    } catch (error) {
+      console.log("Something went wrong on repository layer");
+      throw error;
+    }
+  }
+  
+
   async isAdmin(userId) {
     try {
       const user = await User.findByPk(userId);

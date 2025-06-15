@@ -1,8 +1,10 @@
-const UserRepository = require('../repository/user-repository')
 const jwt = require('jsonwebtoken');
-const { JWT_KEY } = require('../config/serverConfig');
 const bcrypt = require('bcrypt');
+
+const UserRepository = require('../repository/user-repository');
+const { JWT_KEY } = require('../config/serverConfig');
 const AppErrors = require('../utils/error-handler');
+
 class UserService {
   constructor() {
     this.userRepository = new UserRepository();
@@ -16,7 +18,7 @@ class UserService {
       if (error.name == 'SequelizeValidationError') {
         throw error;
       }
-      console.log("Something went wrong on service layer");
+      console.log("Something went wrong in the service layer");
       throw error;
     }
   }
@@ -36,10 +38,18 @@ class UserService {
       const newJWT = this.createToken({ email: user.email, id: user.id });
       return newJWT;
     } catch (error) {
-      if (error.name == 'AttributeNotFound') {
-        throw error;
-      }
       console.log("Something went wrong in the sign in process");
+      throw error;
+    }
+  }
+
+
+  async getAllUsers() {
+    try {
+      const users = await this.userRepository.getAllUsers();
+      return users;
+    } catch (error) {
+      console.log("Something went wrong on service layer");
       throw error;
     }
   }
@@ -61,32 +71,22 @@ class UserService {
     }
   }
 
-
-  async destroy(userId) {
-    try {
-      await this.userRepository.destroy(userId);
-    } catch (error) {
-      console.log("Something went wrong on service layer");
-      throw error;
-    }
-  }
-
   createToken(user) {
     try {
-      const token = jwt.sign({ user }, JWT_KEY, { expiresIn: '1h' });
-      return token;
+      const result = jwt.sign(user, JWT_KEY, { expiresIn: '1d' });
+      return result;
     } catch (error) {
-      console.log("Something went wrong on generating web token");
+      console.log("Something went wrong in token creation");
       throw error;
     }
   }
 
   verifyToken(token) {
     try {
-      const decoded = jwt.verify(token, JWT_KEY);
-      return decoded;
+      const response = jwt.verify(token, JWT_KEY);
+      return response;
     } catch (error) {
-      console.log("Something went wrong on verifying web token", error);
+      console.log("Something went wrong in token validation", error);
       throw error;
     }
   }
@@ -108,7 +108,6 @@ class UserService {
       throw error;
     }
   }
-
 }
 
 module.exports = UserService;
